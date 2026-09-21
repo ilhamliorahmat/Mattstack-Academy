@@ -16,14 +16,13 @@ jobs:
       - name: 📥 Checkout Repository Source Code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js Environment
+      - name: ⚙️ Setup Node.js Build Environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: 📦 Install Project Dependencies
-        run: npm ci
+        run: npm install
 
       - name: 🏗️ Build Production Bundle
         run: npm run build
