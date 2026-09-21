@@ -82,29 +82,43 @@ export default function App() {
   const fetchAppData = async () => {
     if (!token) return;
     try {
-      const [dashRes, chalRes, quizRes] = await Promise.all([
-        fetch('/api/dashboard', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/challenges', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/quizzes', { headers: { Authorization: `Bearer ${token}` } })
+      const fetchWithAuth = async (url: string) => {
+        try {
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.status === 401) {
+            localStorage.removeItem('token');
+            setToken(null);
+            setUser(null);
+            return null;
+          }
+          if (!res.ok) return null;
+          return await res.json();
+        } catch (err) {
+          console.warn(`[API Warning] Fetch failed for ${url}:`, err);
+          return null;
+        }
+      };
+
+      const [dashJson, chalJson, quizJson] = await Promise.all([
+        fetchWithAuth('/api/dashboard'),
+        fetchWithAuth('/api/challenges'),
+        fetchWithAuth('/api/quizzes')
       ]);
 
-      if (dashRes.ok) {
-        const dashJson = await dashRes.json();
+      if (dashJson) {
         setDashboardData(dashJson);
         if (dashJson.user) {
           setUser((prev) => (prev ? { ...prev, streakDays: dashJson.user.streakDays } : prev));
         }
       }
-      if (chalRes.ok) {
-        const chalJson = await chalRes.json();
+      if (chalJson) {
         setChallenges(chalJson.challenges || []);
       }
-      if (quizRes.ok) {
-        const quizJson = await quizRes.json();
+      if (quizJson) {
         setQuizzes(quizJson.quizzes || []);
       }
     } catch (err) {
-      console.error('Failed to fetch app data:', err);
+      console.error('Failed to fetch app data gracefully:', err);
     }
   };
 
