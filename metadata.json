@@ -1,0 +1,6 @@
+{
+  "name": "SYS-WEBDEV-ACADEMY-V1",
+  "description": "Interactive Web Development Learning Platform with Encrypted SQLite Database, Challenges, Quizzes, Gamified Badges, and Admin Dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
