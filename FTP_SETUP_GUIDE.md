@@ -1,18 +1,25 @@
-# 🚀 Automated FTP Deployment Guide (InfinityFree)
+# 🚀 Automated FTP Deployment Guide (`FTP_CRED` JSON Format)
 
-This project is configured with Chairman Mathieu's proven **GitHub Actions Deployment Pipeline** (`.github/workflows/deploy.yml`).
+This project is configured with Chairman Mathieu's **GitHub Actions Deployment Pipeline** (`.github/workflows/deploy.yml`) that parses credentials directly from your single `FTP_CRED` JSON secret.
 
 ---
 
-## 🔑 GitHub Repository Secrets
+## 🔑 GitHub Repository Secret Setup
 
-Go to your GitHub Repository ➔ **Settings** ➔ **Secrets and variables** ➔ **Actions** ➔ **New repository secret**, and create these 3 individual secrets:
+Add **one single secret** named `FTP_CRED` in your GitHub repository (**Settings** ➔ **Secrets and variables** ➔ **Actions** ➔ **New repository secret**).
 
-| Secret Name | Example Value | Description |
-| :--- | :--- | :--- |
-| **`FTP_SERVER`** | `ftpupload.net` | Your InfinityFree FTP host address |
-| **`FTP_USERNAME`** | `epiz_12345678` | Your InfinityFree FTP username |
-| **`FTP_PASSWORD`** | `YourAccountPassword` | Your InfinityFree FTP password |
+- **Secret Name**: `FTP_CRED`
+- **Secret Value** (JSON format):
+
+```json
+{
+  "server": "ftpupload.net",
+  "username": "epiz_12345678",
+  "password": "your_password",
+  "server_dir": "/mattstack.xo.je/htdocs/",
+  "port": 21
+}
+```
 
 ---
 
@@ -49,9 +56,10 @@ jobs:
       - name: Sync files to InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /mattstack.xo.je/htdocs/
+          server: ${{ fromJSON(secrets.FTP_CRED).server }}
+          username: ${{ fromJSON(secrets.FTP_CRED).username }}
+          password: ${{ fromJSON(secrets.FTP_CRED).password }}
+          server-dir: ${{ fromJSON(secrets.FTP_CRED).server_dir }}
+          port: ${{ fromJSON(secrets.FTP_CRED).port || 21 }}
           local-dir: ./dist/
 ```
