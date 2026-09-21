@@ -1,24 +1,3 @@
-# 🚀 Automated FTP Deployment Guide (InfinityFree)
-
-This project is configured with Chairman Mathieu's proven **GitHub Actions Deployment Pipeline** (`.github/workflows/deploy.yml`).
-
----
-
-## 🔑 GitHub Repository Secrets
-
-Go to your GitHub Repository ➔ **Settings** ➔ **Secrets and variables** ➔ **Actions** ➔ **New repository secret**, and create these 3 individual secrets:
-
-| Secret Name | Example Value | Description |
-| :--- | :--- | :--- |
-| **`FTP_SERVER`** | `ftpupload.net` | Your InfinityFree FTP host address |
-| **`FTP_USERNAME`** | `epiz_12345678` | Your InfinityFree FTP username |
-| **`FTP_PASSWORD`** | `YourAccountPassword` | Your InfinityFree FTP password |
-
----
-
-## 🔄 Deployment Pipeline (`.github/workflows/deploy.yml`)
-
-```yaml
 name: Deploy to InfinityFree
 
 on:
@@ -54,4 +33,3 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /mattstack.xo.je/htdocs/
           local-dir: ./dist/
-```
