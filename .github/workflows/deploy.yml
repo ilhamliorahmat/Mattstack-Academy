@@ -25,6 +25,14 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
+      - name: 🔍 Verify Repository Secrets
+        run: |
+          if [ -z "${{ secrets.FTP_SERVER }}" ]; then
+            echo "❌ ERROR: GitHub secret 'FTP_SERVER' is missing or empty!"
+            echo "Please go to Settings -> Secrets and variables -> Actions and add 'FTP_SERVER'."
+            exit 1
+          fi
+
       - name: Sync files to InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
